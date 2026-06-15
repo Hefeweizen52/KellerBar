@@ -1,0 +1,17 @@
+#ifndef PINS_H
+#define PINS_H
+
+#define PIN_PWM_1 GPIO_NUM_1
+#define PIN_PWM_2 GPIO_NUM_2
+#define PIN_PWM_3 GPIO_NUM_11
+#define PIN_PWM_4 GPIO_NUM_12
+#define PIN_PWM_5 GPIO_NUM_13
+#define PIN_PWM_6 GPIO_NUM_14
+
+#define PIN_OE GPIO_NUM_21
+#define PIN_PIXEL_1 GPIO_NUM_18
+#define PIN_PIXEL_2 GPIO_NUM_17
+#define PIN_PIXEL_3 GPIO_NUM_10
+#define PIN_PIXEL_4 GPIO_NUM_9
+
+#endif // PINS_H
