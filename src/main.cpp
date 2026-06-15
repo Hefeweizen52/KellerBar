@@ -6,18 +6,13 @@
 #include "esp32_rmt.hpp"
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
+#include "control_state.h"
 
 #include <PubSubClient.h>
 
 volatile bool update_animation = true;
 
 std::vector<uint16_t> pwm_dutys(6, 0);
-
-// esp32_rmt<WS2812, GRB> strips[] = {
-//     esp32_rmt<WS2812, GRB>(PIN_PIXEL_1, RMT_CHANNEL_0, STRIP_PIXEL_COUNT[0]),
-//     esp32_rmt<WS2812, GRB>(PIN_PIXEL_2, RMT_CHANNEL_1, STRIP_PIXEL_COUNT[1]),
-//     esp32_rmt<WS2812, GRB>(PIN_PIXEL_3, RMT_CHANNEL_2, STRIP_PIXEL_COUNT[2]),
-//     esp32_rmt<WS2812, GRB>(PIN_PIXEL_4, RMT_CHANNEL_3, STRIP_PIXEL_COUNT[3])};
 
 std::vector<esp32_rmt<WS2812, GRB>> strips = {
     esp32_rmt<WS2812, GRB>(PIN_PIXEL_1, RMT_CHANNEL_0, STRIP_PIXEL_COUNT[0]),
@@ -48,6 +43,9 @@ void init_pixels()
     for (auto &strip : strips)
         strip.begin();
 
+    for(uint8_t i = 0; i < NUM_STRIPS; i++)
+        pixel_handler::register_strip(&strips[i], STRIP_PIXEL_COUNT[i]); 
+
     digitalWrite(PIN_OE, LOW); // Output Enable aktivieren
 }
 
@@ -58,7 +56,7 @@ void init_wifi()
 
 void init_mqtt()
 {
-    mqttInit(MY_MQTT_BROKER, 1883, &pwm_dutys);
+    mqttInit(MY_MQTT_BROKER, 1883);
 }
 
 void init_timer()
@@ -95,25 +93,8 @@ void loop()
 {
     if (update_animation)
     {
-        ledcWrite(0, pwm_dutys[0]);
-        ledcWrite(1, pwm_dutys[1]);
-        ledcWrite(2, pwm_dutys[2]);
-        ledcWrite(3, pwm_dutys[3]);
-        ledcWrite(4, pwm_dutys[4]);
-        ledcWrite(5, pwm_dutys[5]);
-
-        for (uint8_t i = 0; i < 4; i++)
-        {
-            strips[i].set_pixel(counter[i], 255, 0, 0);
-            strips[i].show();
-
-            counter[i]++;
-            if (counter[i] == strips[i].num_pixels())
-            {
-                strips[i].clear(strips[i].num_pixels());
-                counter[i] = 0;
-            }
-        }
+        for (uint8_t i = 0; i < 6; i++)
+            pwm_handler::set_duty(i, pwm_dutys[i]);
 
         update_animation = false;
     }

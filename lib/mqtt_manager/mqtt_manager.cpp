@@ -6,6 +6,7 @@
 #include "vector"
 
 std::vector<uint16_t> *p_pwm_dutys;
+size_t* p_pixel_count;
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
@@ -24,28 +25,32 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
 
     std::size_t pos{};
 
-    if (topicStd == "Bar/PWM/1/SetDuty")
-        p_pwm_dutys->at(0) = std::stoul(payloadStd, &pos);
+    // if (topicStd == "Bar/PWM/1/SetDuty")
+    //     p_pwm_dutys->at(0) = std::stoul(payloadStd, &pos);
 
-    if (topicStd == "Bar/PWM/2/SetDuty")
-        p_pwm_dutys->at(1) = std::stoul(payloadStd, &pos);
+    // else if (topicStd == "Bar/PWM/2/SetDuty")
+    //     p_pwm_dutys->at(1) = std::stoul(payloadStd, &pos);
 
-    if (topicStd == "Bar/PWM/3/SetDuty")
-        p_pwm_dutys->at(2) = std::stoul(payloadStd, &pos);
+    // else if (topicStd == "Bar/PWM/3/SetDuty")
+    //     p_pwm_dutys->at(2) = std::stoul(payloadStd, &pos);
 
-    if (topicStd == "Bar/PWM/4/SetDuty")
-        p_pwm_dutys->at(3) = std::stoul(payloadStd, &pos);
+    // else if (topicStd == "Bar/PWM/4/SetDuty")
+    //     p_pwm_dutys->at(3) = std::stoul(payloadStd, &pos);
 
-    if (topicStd == "Bar/PWM/5/SetDuty")
-        p_pwm_dutys->at(4) = std::stoul(payloadStd, &pos);
+    // else if (topicStd == "Bar/PWM/5/SetDuty")
+    //     p_pwm_dutys->at(4) = std::stoul(payloadStd, &pos);
 
-    if (topicStd == "Bar/PWM/6/SetDuty")
-        p_pwm_dutys->at(5) = std::stoul(payloadStd, &pos);
+    // else if (topicStd == "Bar/PWM/6/SetDuty")
+    //     p_pwm_dutys->at(5) = std::stoul(payloadStd, &pos);
+
+    // else if (topicStd == "Bar/Pixel/1/SetCount") 
+    // {
+    //     *p_pixel_count = std::stoul(payloadStd, &pos);
+    // }
 }
 
-void mqttInit(const char *broker, uint16_t port, std::vector<uint16_t> *pwm_dutys_ptr)
+void mqttInit(const char *broker, uint16_t port)
 {
-    p_pwm_dutys = pwm_dutys_ptr;
     mqttBroker = broker;
     mqttPort = port;
     mqttClient.setServer(mqttBroker, mqttPort);
