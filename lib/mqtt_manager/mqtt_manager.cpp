@@ -4,6 +4,7 @@
 #include "wifi_manager.h" // Nutzt das 'isConnected' Flag von vorhin
 // #include "control_state.h"
 #include "vector"
+#include "control_state.h"
 
 std::vector<uint16_t> *p_pwm_dutys;
 size_t* p_pixel_count;
@@ -25,28 +26,36 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
 
     std::size_t pos{};
 
-    // if (topicStd == "Bar/PWM/1/SetDuty")
-    //     p_pwm_dutys->at(0) = std::stoul(payloadStd, &pos);
+    if (topicStd == "Bar/PWM/1/SetDuty")
+        pwm_handler::set_duty(0, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/PWM/2/SetDuty")
+        pwm_handler::set_duty(1, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/PWM/3/SetDuty")
+        pwm_handler::set_duty(2, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/PWM/4/SetDuty")
+        pwm_handler::set_duty(3, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/PWM/5/SetDuty")
+        pwm_handler::set_duty(4, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/PWM/6/SetDuty")
+        pwm_handler::set_duty(5, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/1/SetMode")
+        pixel_handler::set_mode(0, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/2/SetMode")
+        pixel_handler::set_mode(1, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/3/SetMode")
+        pixel_handler::set_mode(2, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/4/SetMode")
+        pixel_handler::set_mode(3, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/1/SetHSL")
+        pixel_handler::set_color_packed(0, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/2/SetHSL")
+        pixel_handler::set_color_packed(1, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/3/SetHSL")
+        pixel_handler::set_color_packed(2, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/4/SetHSL")
+        pixel_handler::set_color_packed(3, std::stoul(payloadStd, &pos));
 
-    // else if (topicStd == "Bar/PWM/2/SetDuty")
-    //     p_pwm_dutys->at(1) = std::stoul(payloadStd, &pos);
 
-    // else if (topicStd == "Bar/PWM/3/SetDuty")
-    //     p_pwm_dutys->at(2) = std::stoul(payloadStd, &pos);
-
-    // else if (topicStd == "Bar/PWM/4/SetDuty")
-    //     p_pwm_dutys->at(3) = std::stoul(payloadStd, &pos);
-
-    // else if (topicStd == "Bar/PWM/5/SetDuty")
-    //     p_pwm_dutys->at(4) = std::stoul(payloadStd, &pos);
-
-    // else if (topicStd == "Bar/PWM/6/SetDuty")
-    //     p_pwm_dutys->at(5) = std::stoul(payloadStd, &pos);
-
-    // else if (topicStd == "Bar/Pixel/1/SetCount") 
-    // {
-    //     *p_pixel_count = std::stoul(payloadStd, &pos);
-    // }
 }
 
 void mqttInit(const char *broker, uint16_t port)

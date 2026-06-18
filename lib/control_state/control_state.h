@@ -14,8 +14,25 @@ namespace pixel_handler
 {
     extern std::vector<comfort_functions*> strips;
     extern std::vector<size_t> pixel_counts;
+    extern std::vector<uint8_t> modes;
+    extern std::vector<uint8_t> prev_modes;
+    extern std::vector<HSL> colors;
+    extern std::vector<HSL> bi_colors;
+    extern std::vector<std::vector<uint32_t>> params;
+
+    void tick();
 
     void register_strip(comfort_functions* p_strip, size_t p_pixel_count);
+
+    void set_mode(uint8_t strip, uint8_t mode);
+
+    uint8_t get_mode(uint8_t strip);
+
+    void set_color(uint8_t strip, RGB color);
+
+    void set_color(uint8_t strip, HSL color);
+
+    void set_color_packed(uint8_t strip, uint32_t packed);
 };
 
 #endif //CONTROL_STATE_H

@@ -65,12 +65,12 @@ void init_timer()
         .callback = &onTimerCallback,      // Verweis auf unsere Funktion oben
         .arg = NULL,                       // Optionale Argumente, die übergeben werden können
         .dispatch_method = ESP_TIMER_TASK, // Ausführung im High-Priority Timer-Task
-        .name = "1-sekunden-timer"         // Name des Timers (hilfreich beim Debugging)
+        .name = "animations-timer"         // Name des Timers (hilfreich beim Debugging)
     };
 
     esp_timer_handle_t periodic_timer;
     esp_timer_create(&timer_args, &periodic_timer);
-    esp_timer_start_periodic(periodic_timer, 100000);
+    esp_timer_start_periodic(periodic_timer, 10000);
 }
 
 void IRAM_ATTR onTimerCallback(void *arg)
@@ -87,15 +87,11 @@ void setup()
     init_timer();
 }
 
-std::vector<uint16_t> counter(4, 0);
-
 void loop()
 {
     if (update_animation)
     {
-        for (uint8_t i = 0; i < 6; i++)
-            pwm_handler::set_duty(i, pwm_dutys[i]);
-
+        pixel_handler::tick();
         update_animation = false;
     }
 
