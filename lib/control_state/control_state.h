@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <vector>
 #include "comfort_functions.hpp" // Wichtig: Basisklasse inkludieren
+#include "neon.h"
 
 namespace pwm_handler
 {
@@ -19,6 +20,7 @@ namespace pixel_handler
     extern std::vector<HSL> colors;
     extern std::vector<HSL> bi_colors;
     extern std::vector<std::vector<uint32_t>> params;
+    extern std::vector<std::vector<neon::tube_t>> tubes;
 
     void tick();
 
@@ -33,6 +35,8 @@ namespace pixel_handler
     void set_color(uint8_t strip, HSL color);
 
     void set_color_packed(uint8_t strip, uint32_t packed);
+
+    void register_tube(uint8_t strip, neon::tube_t tube);
 };
 
 #endif //CONTROL_STATE_H

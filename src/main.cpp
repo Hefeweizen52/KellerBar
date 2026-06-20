@@ -7,6 +7,7 @@
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 #include "control_state.h"
+#include "neon.h"
 
 #include <PubSubClient.h>
 
@@ -85,6 +86,11 @@ void setup()
     init_wifi();
     init_mqtt();
     init_timer();
+
+    // neon::add_tube(neon::tube_config_t(0, 30, &strips[0]));
+
+    // neon::tube_t tube(neon::tube_config_t(0, 20), &strips.at(0));
+    
 }
 
 void loop()

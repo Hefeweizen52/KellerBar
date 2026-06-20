@@ -1,5 +1,7 @@
+#include <Arduino.h>
 #include "control_state.h"
 #include "config.h"
+#include "neon.h"
 
 namespace pwm_handler
 {
@@ -9,21 +11,21 @@ namespace pwm_handler
     }
 };
 
-namespace pixel_handler 
-{
-    std::vector<comfort_functions*> strips;
+namespace pixel_handler {
+    std::vector<comfort_functions *> strips;
     std::vector<size_t> pixel_counts;
     std::vector<uint8_t> modes;
     std::vector<uint8_t> prev_modes;
     std::vector<HSL> colors;
     std::vector<HSL> bi_colors;
     std::vector<std::vector<uint32_t>> params;
+    std::vector<std::vector<neon::tube_t>> tubes;
 
     void tick()
     {
         for (uint8_t i = 0; i < strips.size(); i++)
         {
-            comfort_functions strip = *strips.at(i);
+            comfort_functions *strip = strips.at(i);
             size_t num_leds = pixel_counts.at(i);
             uint8_t mode = modes.at(i);
             HSL color = colors.at(i);
@@ -31,17 +33,17 @@ namespace pixel_handler
             switch (mode)
             {
             case PIXEL_MODE_STATIC:
-                strip.fill(0, num_leds, color);
+                strip->fill(0, num_leds, color);
                 break;
 
             case PIXEL_MODE_SINE:
 
                 break;
-            
+
             case PIXEL_MODE_BI_SINE:
 
                 break;
-            
+
             case PIXEL_MODE_SPARKLE:
 
                 break;
@@ -50,13 +52,12 @@ namespace pixel_handler
 
                 break;
 
-
             default:
                 mode = PIXEL_MODE_STATIC;
                 break;
             }
 
-            strip.show();
+            strip->show();
         }
     }
 
@@ -64,11 +65,12 @@ namespace pixel_handler
     {
         strips.push_back(p_strip);
         pixel_counts.push_back(p_pixel_count);
-        modes.push_back(0); // initialmodus
-        prev_modes.push_back(0); // initialmodus
-        colors.push_back(HSL(0, 1.0, 0.5)); // rot
+        modes.push_back(0);                       // initialmodus
+        prev_modes.push_back(0);                  // initialmodus
+        colors.push_back(HSL(0, 1.0, 0.5));       // rot
         bi_colors.push_back(HSL(10.0, 1.0, 0.5)); // orange??
         params.push_back(std::vector<uint32_t>(10));
+        tubes.push_back(std::vector<neon::tube_t>(0));
     }
 
     void set_mode(uint8_t strip, uint8_t mode)
@@ -79,12 +81,12 @@ namespace pixel_handler
     uint8_t get_mode(uint8_t strip)
     {
         return modes.at(strip);
-    }  
+    }
 
     void set_color(uint8_t strip, RGB color)
     {
         colors.at(strip) = color.toHSL();
-    } 
+    }
 
     void set_color(uint8_t strip, HSL color)
     {
@@ -93,8 +95,13 @@ namespace pixel_handler
 
     void set_color_packed(uint8_t strip, uint32_t packed)
     {
-        colors.at(strip).h = ((packed >> 20) & 0x3FF) / 1023.0f;
+        colors.at(strip).h = (((packed >> 20) & 0x3FF) * 360.0f) / 1023.0f;
         colors.at(strip).s = ((packed >> 10) & 0x3FF) / 1023.0f;
         colors.at(strip).l = ((packed & 0x3FF) / 1023.0f);
+    }
+
+    void register_tube(uint8_t strip, neon::tube_t tube)
+    {
+        tubes.at(strip).push_back(tube);
     }
 };
