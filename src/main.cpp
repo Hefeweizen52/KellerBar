@@ -44,8 +44,8 @@ void init_pixels()
     for (auto &strip : strips)
         strip.begin();
 
-    for(uint8_t i = 0; i < NUM_STRIPS; i++)
-        pixel_handler::register_strip(&strips[i], STRIP_PIXEL_COUNT[i]); 
+    for (uint8_t i = 0; i < NUM_STRIPS; i++)
+        pixel_handler::register_strip(&strips[i], STRIP_PIXEL_COUNT[i]);
 
     digitalWrite(PIN_OE, LOW); // Output Enable aktivieren
 }
@@ -87,10 +87,13 @@ void setup()
     init_mqtt();
     init_timer();
 
-    // neon::add_tube(neon::tube_config_t(0, 30, &strips[0]));
+    neon::tube_t tube1(neon::tube_config_t(0, 78), &strips.at(0));
+    neon::tube_t tube2(neon::tube_config_t(82, 88), &strips.at(0));
+    neon::tube_t tube3(neon::tube_config_t(174, 78), &strips.at(0));
 
-    // neon::tube_t tube(neon::tube_config_t(0, 20), &strips.at(0));
-    
+    pixel_handler::register_tube(0, tube1);
+    pixel_handler::register_tube(0, tube2);
+    pixel_handler::register_tube(0, tube3);
 }
 
 void loop()

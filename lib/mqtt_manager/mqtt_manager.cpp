@@ -7,7 +7,7 @@
 #include "control_state.h"
 
 std::vector<uint16_t> *p_pwm_dutys;
-size_t* p_pixel_count;
+size_t *p_pixel_count;
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
@@ -55,6 +55,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     else if (topicStd == "Bar/Pixel/4/SetHSL")
         pixel_handler::set_color_packed(3, std::stoul(payloadStd, &pos));
 
+    else if (topicStd == "Bar/Pixel/1/SetParam/1")
+        pixel_handler::set_param(0, 0, std::stoul(payloadStd, &pos));
 
 }
 

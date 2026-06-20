@@ -11,7 +11,8 @@ namespace pwm_handler
     }
 };
 
-namespace pixel_handler {
+namespace pixel_handler
+{
     std::vector<comfort_functions *> strips;
     std::vector<size_t> pixel_counts;
     std::vector<uint8_t> modes;
@@ -28,6 +29,7 @@ namespace pixel_handler {
             comfort_functions *strip = strips.at(i);
             size_t num_leds = pixel_counts.at(i);
             uint8_t mode = modes.at(i);
+            uint8_t prev_mode = prev_modes.at(i);
             HSL color = colors.at(i);
 
             switch (mode)
@@ -49,14 +51,29 @@ namespace pixel_handler {
                 break;
 
             case PIXEL_MODE_NEON:
+                if (prev_mode != mode)
+                {
+                    strip->clear(num_leds);
+
+                    for (neon::tube_t &tube : tubes.at(i))
+                        tube.reset();
+                }
+
+                for (neon::tube_t &tube : tubes.at(i))
+                    tube.tick();
 
                 break;
+
+            case PIXEL_MODE_FILL_COUNT:
+                strip->clear(num_leds);
+                strip->fill(0, params.at(i).at(0), color);
 
             default:
                 mode = PIXEL_MODE_STATIC;
                 break;
             }
 
+            prev_modes.at(i) = modes.at(i);
             strip->show();
         }
     }
@@ -76,6 +93,7 @@ namespace pixel_handler {
     void set_mode(uint8_t strip, uint8_t mode)
     {
         modes.at(strip) = mode;
+        // Serial.printf("Set mode %u to strip %u\n", mode, strip);
     }
 
     uint8_t get_mode(uint8_t strip)
@@ -104,4 +122,10 @@ namespace pixel_handler {
     {
         tubes.at(strip).push_back(tube);
     }
+
+    void set_param(uint8_t strip, uint8_t idx, uint32_t value)
+    {
+        params.at(strip).at(idx) = value;
+    }
+
 };

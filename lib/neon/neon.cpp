@@ -35,7 +35,7 @@ namespace neon
             graded_color.l *= fade_factor;
 
             this->strip->set_pixel(this->conf.idx_begin + i, graded_color);
-            this->strip->set_pixel(this->conf.count + this->conf.count - 1 - i, graded_color);
+            this->strip->set_pixel(this->conf.idx_begin + this->conf.count - 1 - i, graded_color);
         }
     };
 
@@ -51,7 +51,7 @@ namespace neon
 
             if (this->color_edge.l < EDGE_COLOR.l)
             {
-                this->color_edge.l += 0.01f;
+                this->color_edge.l += 0.05f;
                 // ränder setzen...
             }
             else if (this->color_edge.l >= EDGE_COLOR.l)
@@ -76,7 +76,7 @@ namespace neon
             {
                 if (this->color.l < BASE_COLOR.l)
                 {
-                    this->color.l += 0.01;
+                    this->color.l += 0.25;
                     this->strip->fill(this->conf.idx_begin + EDGE_WIDTH, this->conf.count - 2 * EDGE_WIDTH, this->color);
                 }
                 else
@@ -106,6 +106,8 @@ namespace neon
 
         case TUBE_STATE::ON:
         {
+            this->color.l = 0.5f;
+
             this->draw_edges();
             this->strip->fill(this->conf.idx_begin + EDGE_WIDTH, this->conf.count - 2 * EDGE_WIDTH, this->color);
             break;
@@ -118,5 +120,7 @@ namespace neon
             this->counter++;
 
         this->prev_state = this->state;
+
+        this->strip->show();
     };
 };

@@ -4,12 +4,12 @@
 #define PROBABILITY_BROKEN 0.5F
 #define PROBABILITY_FLICKER 0.5F
 #define MIN_TICKS_INITIAL_DELAY 0
-#define MAX_TICKS_INITIAL_DELAY 255
-#define MIN_IGNITIONS 1
-#define MAX_IGNITIONS 8
-#define MIN_TICKS_IGNITION_DELAY 50
-#define MAX_TICKS_IGNITION_DELAY 255
-#define MAX_HUE_DELTA_DEGREE 5
+#define MAX_TICKS_INITIAL_DELAY 50
+#define MIN_IGNITIONS 3
+#define MAX_IGNITIONS 10
+#define MIN_TICKS_IGNITION_DELAY 3
+#define MAX_TICKS_IGNITION_DELAY 8
+#define MAX_HUE_DELTA_DEGREE 8
 #define EDGE_WIDTH 5
 
 #include <Arduino.h>
@@ -54,6 +54,8 @@ namespace neon
 
         comfort_functions *strip;
 
+        tube_t() = default;
+
         tube_t(tube_config_t tube_config, comfort_functions *strip) : conf(tube_config), strip(strip) {};
 
         /**
@@ -72,8 +74,8 @@ namespace neon
         void draw_edges();
     };
 
-    inline HSL BASE_COLOR = HSL(36.0f, 0.42f, 0.5f);
-    inline HSL EDGE_COLOR = HSL(11.0f, 0.75f, 0.29f);
+    inline HSL BASE_COLOR = HSL(36.0f, 0.60f, 0.5f);
+    inline HSL EDGE_COLOR = HSL(25.0f, 0.65f, 0.15f);
 
 };
 

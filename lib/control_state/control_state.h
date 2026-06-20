@@ -37,6 +37,8 @@ namespace pixel_handler
     void set_color_packed(uint8_t strip, uint32_t packed);
 
     void register_tube(uint8_t strip, neon::tube_t tube);
+
+    void set_param(uint8_t strip, uint8_t idx, uint32_t value);
 };
 
 #endif //CONTROL_STATE_H
