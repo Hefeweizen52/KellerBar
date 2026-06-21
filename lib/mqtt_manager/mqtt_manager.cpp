@@ -38,6 +38,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         pwm_handler::set_duty(4, std::stoul(payloadStd, &pos));
     else if (topicStd == "Bar/PWM/6/SetDuty")
         pwm_handler::set_duty(5, std::stoul(payloadStd, &pos));
+
     else if (topicStd == "Bar/Pixel/1/SetMode")
         pixel_handler::set_mode(0, std::stoul(payloadStd, &pos));
     else if (topicStd == "Bar/Pixel/2/SetMode")
@@ -46,6 +47,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         pixel_handler::set_mode(2, std::stoul(payloadStd, &pos));
     else if (topicStd == "Bar/Pixel/4/SetMode")
         pixel_handler::set_mode(3, std::stoul(payloadStd, &pos));
+
     else if (topicStd == "Bar/Pixel/1/SetHSL")
         pixel_handler::set_color_packed(0, std::stoul(payloadStd, &pos));
     else if (topicStd == "Bar/Pixel/2/SetHSL")
@@ -55,9 +57,21 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     else if (topicStd == "Bar/Pixel/4/SetHSL")
         pixel_handler::set_color_packed(3, std::stoul(payloadStd, &pos));
 
-    else if (topicStd == "Bar/Pixel/1/SetParam/1")
-        pixel_handler::set_param(0, 0, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/1/SetBiHue")
+        pixel_handler::set_param(0, INDEX_PARAM_BI_HUE, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/2/SetBiHue")
+        pixel_handler::set_param(1, INDEX_PARAM_BI_HUE, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/3/SetBiHue")
+        pixel_handler::set_param(2, INDEX_PARAM_BI_HUE, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/4/SetBiHue")
+        pixel_handler::set_param(3, INDEX_PARAM_BI_HUE, std::stoul(payloadStd, &pos));
 
+    else if (topicStd == "Bar/Pixel/1/SetParam/1")
+        pixel_handler::set_param(0, INDEX_PARAM_PIXEL_COUNT, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/1/SetParam/2")
+        pixel_handler::set_param(0, INDEX_PARAM_SINE_WAVELENGTH, std::stoul(payloadStd, &pos));
+    else if (topicStd == "Bar/Pixel/1/SetParam/3")
+        pixel_handler::set_param(0, INDEX_PARAM_SINE_SPEED, std::stoul(payloadStd, &pos));
 }
 
 void mqttInit(const char *broker, uint16_t port)

@@ -2,6 +2,7 @@
 #include "control_state.h"
 #include "config.h"
 #include "neon.h"
+#include "sine.h"
 
 namespace pwm_handler
 {
@@ -18,9 +19,12 @@ namespace pixel_handler
     std::vector<uint8_t> modes;
     std::vector<uint8_t> prev_modes;
     std::vector<HSL> colors;
-    std::vector<HSL> bi_colors;
+    std::vector<float> bi_hues;
     std::vector<std::vector<uint32_t>> params;
     std::vector<std::vector<neon::tube_t>> tubes;
+    std::vector<std::vector<sine::sine_t>> sines;
+    std::vector<std::vector<bi_sine::bi_sine_t>> bi_sines;
+    std::vector<std::vector<sparkle::sparkle_t>> sparkles;
 
     void tick()
     {
@@ -31,6 +35,7 @@ namespace pixel_handler
             uint8_t mode = modes.at(i);
             uint8_t prev_mode = prev_modes.at(i);
             HSL color = colors.at(i);
+            float bi_hue = bi_hues.at(i);
 
             switch (mode)
             {
@@ -39,14 +44,34 @@ namespace pixel_handler
                 break;
 
             case PIXEL_MODE_SINE:
+                // if (prev_mode != mode)
+                // {
+                //     strip->clear(num_leds);
+
+                //     for (sine::sine_t &sine : sines.at(i))
+                //         sine.reset();
+                // }
+
+                for (sine::sine_t &sine : sines.at(i))
+                    sine.tick(params.at(i).at(INDEX_PARAM_SINE_WAVELENGTH), params.at(i).at(INDEX_PARAM_SINE_SPEED), color);
 
                 break;
 
             case PIXEL_MODE_BI_SINE:
+                for (bi_sine::bi_sine_t &bi_sine : bi_sines.at(i))
+                    bi_sine.tick(params.at(i).at(INDEX_PARAM_SINE_WAVELENGTH), params.at(i).at(INDEX_PARAM_SINE_SPEED), color, HSL(bi_hue, color.s, color.l));
 
                 break;
 
             case PIXEL_MODE_SPARKLE:
+                if (prev_mode != mode)
+                {
+                    for (sparkle::sparkle_t &sparkle : sparkles.at(i))
+                        sparkle.reset();
+                }
+
+                for (sparkle::sparkle_t &sparkle : sparkles.at(i))
+                    sparkle.tick(params.at(i).at(INDEX_PARAM_SINE_SPEED), color);
 
                 break;
 
@@ -82,12 +107,15 @@ namespace pixel_handler
     {
         strips.push_back(p_strip);
         pixel_counts.push_back(p_pixel_count);
-        modes.push_back(0);                       // initialmodus
-        prev_modes.push_back(0);                  // initialmodus
-        colors.push_back(HSL(0, 1.0, 0.5));       // rot
-        bi_colors.push_back(HSL(10.0, 1.0, 0.5)); // orange??
+        modes.push_back(0);
+        prev_modes.push_back(0);
+        colors.push_back(HSL(0, 1.0, 0.5));
+        bi_hues.push_back(20.0f);
         params.push_back(std::vector<uint32_t>(10));
         tubes.push_back(std::vector<neon::tube_t>(0));
+        sines.push_back(std::vector<sine::sine_t>(0));
+        bi_sines.push_back(std::vector<bi_sine::bi_sine_t>(0));
+        sparkles.push_back(std::vector<sparkle::sparkle_t>(0));
     }
 
     void set_mode(uint8_t strip, uint8_t mode)
@@ -123,9 +151,29 @@ namespace pixel_handler
         tubes.at(strip).push_back(tube);
     }
 
+    void register_sine(uint8_t strip, sine::sine_t sine)
+    {
+        sines.at(strip).push_back(sine);
+    }
+
+    void register_bi_sine(uint8_t strip, bi_sine::bi_sine_t bi_sine)
+    {
+        bi_sines.at(strip).push_back(bi_sine);
+    }
+
+    void register_sparkle(uint8_t strip, sparkle::sparkle_t sparkle)
+    {
+        sparkles.at(strip).push_back(sparkle);
+    }
+
     void set_param(uint8_t strip, uint8_t idx, uint32_t value)
     {
         params.at(strip).at(idx) = value;
+
+        if (idx == INDEX_PARAM_BI_HUE)
+        {
+            bi_hues.at(strip) = (value * 360.0f) / 1023.0f;
+        }
     }
 
 };

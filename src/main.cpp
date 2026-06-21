@@ -7,7 +7,11 @@
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 #include "control_state.h"
+
 #include "neon.h"
+#include "sine.h"
+#include "bi_sine.h"
+#include "sparkle.h"
 
 #include <PubSubClient.h>
 
@@ -94,6 +98,15 @@ void setup()
     pixel_handler::register_tube(0, tube1);
     pixel_handler::register_tube(0, tube2);
     pixel_handler::register_tube(0, tube3);
+
+    sine::sine_t sine1(sine::sine_config_t(0, STRIP_PIXEL_COUNT[0]), &strips.at(0));
+    pixel_handler::register_sine(0, sine1);
+
+    bi_sine::bi_sine_t bi_sine1(bi_sine::bi_sine_config_t(0, STRIP_PIXEL_COUNT[0]), &strips.at(0));
+    pixel_handler::register_bi_sine(0, bi_sine1);
+
+    sparkle::sparkle_t sparkle1(sparkle::sparkle_config_t(0, STRIP_PIXEL_COUNT[0]), &strips.at(0));
+    pixel_handler::register_sparkle(0, sparkle1);
 }
 
 void loop()
